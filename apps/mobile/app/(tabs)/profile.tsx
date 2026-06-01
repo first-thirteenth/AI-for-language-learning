@@ -1,14 +1,14 @@
 // apps/mobile/app/(tabs)/profile.tsx
-import { View, Text, Pressable, Alert } from 'react-native'
-import { supabase } from '../../utils/supabase'
-import { useAuthStore } from '../../stores/authStore'
+import { View, Text, Pressable, Alert } from "react-native";
+import { supabase } from "../../utils/supabase";
+import { useAuthStore } from "../../stores/authStore";
 
 export default function ProfileScreen() {
-  const { user, profile, signOut } = useAuthStore()
+  const { user, profile, signOut } = useAuthStore();
 
   async function handleSignOut() {
-    await supabase.auth.signOut()
-    signOut()
+    await supabase.auth.signOut();
+    signOut();
   }
 
   return (
@@ -24,13 +24,13 @@ export default function ProfileScreen() {
         <View>
           <Text className="text-text-muted text-sm mb-1">Learning</Text>
           <Text className="text-text text-base font-semibold">
-            {profile?.target_language?.toUpperCase() ?? '—'}
+            {profile?.target_language?.toUpperCase() ?? "—"}
           </Text>
         </View>
         <View>
           <Text className="text-text-muted text-sm mb-1">Level</Text>
           <Text className="text-text text-base font-semibold capitalize">
-            {profile?.level ?? '—'}
+            {profile?.level ?? "—"}
           </Text>
         </View>
         <View>
@@ -49,5 +49,5 @@ export default function ProfileScreen() {
         <Text className="text-white font-semibold text-base">Sign Out</Text>
       </Pressable>
     </View>
-  )
+  );
 }

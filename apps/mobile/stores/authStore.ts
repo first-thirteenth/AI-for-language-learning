@@ -1,17 +1,17 @@
 // apps/mobile/stores/authStore.ts
-import { create } from 'zustand'
-import { Session, User } from '@supabase/supabase-js'
-import { Profile } from '../types'
+import { create } from "zustand";
+import { Session, User } from "@supabase/supabase-js";
+import { Profile } from "../types";
 
 interface AuthState {
-  session: Session | null
-  user: User | null
-  profile: Profile | null
-  isLoading: boolean
-  setSession: (session: Session | null) => void
-  setProfile: (profile: Profile | null) => void
-  setLoading: (isLoading: boolean) => void
-  signOut: () => void
+  session: Session | null;
+  user: User | null;
+  profile: Profile | null;
+  isLoading: boolean;
+  setSession: (session: Session | null) => void;
+  setProfile: (profile: Profile | null) => void;
+  setLoading: (isLoading: boolean) => void;
+  signOut: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -23,4 +23,4 @@ export const useAuthStore = create<AuthState>((set) => ({
   setProfile: (profile) => set({ profile }),
   setLoading: (isLoading) => set({ isLoading }),
   signOut: () => set({ session: null, user: null, profile: null }),
-}))
+}));

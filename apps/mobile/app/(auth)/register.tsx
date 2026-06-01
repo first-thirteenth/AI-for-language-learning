@@ -1,43 +1,52 @@
 // apps/mobile/app/(auth)/register.tsx
-import { useState } from 'react'
-import { View, Text, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native'
-import { Link, useRouter } from 'expo-router'
-import { supabase } from '../../utils/supabase'
+import { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import { Link, useRouter } from "expo-router";
+import { supabase } from "../../utils/supabase";
 
 export default function RegisterScreen() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   async function handleRegister() {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields')
-      return
+      Alert.alert("Error", "Please fill in all fields");
+      return;
     }
     if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters')
-      return
+      Alert.alert("Error", "Password must be at least 6 characters");
+      return;
     }
 
-    setIsLoading(true)
-    const { data, error } = await supabase.auth.signUp({ email, password })
-    setIsLoading(false)
+    setIsLoading(true);
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    setIsLoading(false);
 
     if (error) {
-      Alert.alert('Registration failed', error.message)
+      Alert.alert("Registration failed", error.message);
     } else if (data.session) {
       // Auto-confirmed (e.g., email confirmation disabled in Supabase)
-      router.replace('/(tabs)/home')
+      router.replace("/(tabs)/home");
     } else {
-      Alert.alert('Check your email', 'We sent you a confirmation link!')
+      Alert.alert("Check your email", "We sent you a confirmation link!");
     }
   }
 
   return (
     <View className="flex-1 bg-background px-6 justify-center">
       <Text className="text-4xl font-bold text-text mb-2">Get started 🚀</Text>
-      <Text className="text-text-muted mb-10">Create your account to start learning</Text>
+      <Text className="text-text-muted mb-10">
+        Create your account to start learning
+      </Text>
 
       <TextInput
         className="bg-surface text-text rounded-xl px-4 py-4 mb-4 text-base"
@@ -66,10 +75,13 @@ export default function RegisterScreen() {
         disabled={isLoading}
         accessibilityLabel="Create account button"
       >
-        {isLoading
-          ? <ActivityIndicator color="white" />
-          : <Text className="text-white font-semibold text-base">Create Account</Text>
-        }
+        {isLoading ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Text className="text-white font-semibold text-base">
+            Create Account
+          </Text>
+        )}
       </Pressable>
 
       <View className="flex-row justify-center">
@@ -79,5 +91,5 @@ export default function RegisterScreen() {
         </Link>
       </View>
     </View>
-  )
+  );
 }

@@ -1,36 +1,48 @@
 // apps/mobile/app/(auth)/login.tsx
-import { useState } from 'react'
-import { View, Text, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native'
-import { Link, useRouter } from 'expo-router'
-import { supabase } from '../../utils/supabase'
+import { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import { Link, useRouter } from "expo-router";
+import { supabase } from "../../utils/supabase";
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   async function handleLogin() {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields')
-      return
+      Alert.alert("Error", "Please fill in all fields");
+      return;
     }
 
-    setIsLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    setIsLoading(false)
+    setIsLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    setIsLoading(false);
 
     if (error) {
-      Alert.alert('Login failed', error.message)
+      Alert.alert("Login failed", error.message);
     } else {
-      router.replace('/(tabs)/home')
+      router.replace("/(tabs)/home");
     }
   }
 
   return (
     <View className="flex-1 bg-background px-6 justify-center">
       <Text className="text-4xl font-bold text-text mb-2">Welcome back 👋</Text>
-      <Text className="text-text-muted mb-10">Sign in to continue learning</Text>
+      <Text className="text-text-muted mb-10">
+        Sign in to continue learning
+      </Text>
 
       <TextInput
         className="bg-surface text-text rounded-xl px-4 py-4 mb-4 text-base"
@@ -59,10 +71,11 @@ export default function LoginScreen() {
         disabled={isLoading}
         accessibilityLabel="Sign in button"
       >
-        {isLoading
-          ? <ActivityIndicator color="white" />
-          : <Text className="text-white font-semibold text-base">Sign In</Text>
-        }
+        {isLoading ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Text className="text-white font-semibold text-base">Sign In</Text>
+        )}
       </Pressable>
 
       <View className="flex-row justify-center">
@@ -72,5 +85,5 @@ export default function LoginScreen() {
         </Link>
       </View>
     </View>
-  )
+  );
 }

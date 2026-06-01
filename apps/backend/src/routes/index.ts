@@ -1,9 +1,11 @@
 // apps/backend/src/routes/index.ts
 import { Router } from 'express'
+import chatRouter from './chat'
+import vocabularyRouter from './vocabulary'
 
 const router = Router()
 
-// Routes will be added here as features are built
-// Example: router.use('/chat', chatRoutes)
+router.use('/chat', chatRouter)
+router.use('/vocabulary', vocabularyRouter)
 
 export default router
