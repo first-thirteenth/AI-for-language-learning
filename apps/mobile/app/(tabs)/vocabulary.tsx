@@ -1,5 +1,5 @@
 // apps/mobile/app/(tabs)/vocabulary.tsx
-import { View, Text } from 'react-native'
+import { View, Text } from "react-native";
 
 export default function VocabularyScreen() {
   return (
@@ -7,8 +7,8 @@ export default function VocabularyScreen() {
       <Text className="text-5xl mb-4">📚</Text>
       <Text className="text-text text-2xl font-bold mb-2">My Words</Text>
       <Text className="text-text-muted text-center">
-        Your saved vocabulary will appear here.{'\n'}Coming soon!
+        Your saved vocabulary will appear here.{"\n"}Coming soon!
       </Text>
     </View>
-  )
+  );
 }

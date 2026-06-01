@@ -1,5 +1,5 @@
 // apps/mobile/app/(tabs)/chat.tsx
-import { View, Text } from 'react-native'
+import { View, Text } from "react-native";
 
 export default function ChatScreen() {
   return (
@@ -7,8 +7,8 @@ export default function ChatScreen() {
       <Text className="text-5xl mb-4">💬</Text>
       <Text className="text-text text-2xl font-bold mb-2">AI Chat</Text>
       <Text className="text-text-muted text-center">
-        Practice conversations with your AI language tutor.{'\n'}Coming soon!
+        Practice conversations with your AI language tutor.{"\n"}Coming soon!
       </Text>
     </View>
-  )
+  );
 }
