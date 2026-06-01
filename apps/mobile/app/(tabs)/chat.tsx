@@ -71,7 +71,9 @@ function useChatMessages(selectedLanguage: string) {
           createdAt: new Date(),
         }
         setMessages((prev) => [assistantMessage, ...prev])
-      } catch {
+      } catch (err) {
+        console.error('Chat error:', err)
+        Alert.alert('Debug', err instanceof Error ? err.message : String(err))
         const errorMessage: Message = {
           id: generateId(),
           role: 'assistant',
