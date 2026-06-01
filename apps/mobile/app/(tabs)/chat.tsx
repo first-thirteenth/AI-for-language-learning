@@ -135,7 +135,10 @@ function TypingIndicator() {
 
 function EmptyState() {
   return (
-    <View className="flex-1 items-center justify-center px-8">
+    <View
+      className="flex-1 items-center justify-center px-8"
+      style={{ transform: [{ scaleY: -1 }] }}
+    >
       <Text className="text-5xl mb-4">💬</Text>
       <Text className="text-text text-lg font-semibold text-center mb-2">
         Start a conversation!
