@@ -19,6 +19,7 @@ node_modules/
 # Environment variables - NEVER commit these!
 .env
 .env.local
+.env.example
 .env.production
 
 # Build outputs
