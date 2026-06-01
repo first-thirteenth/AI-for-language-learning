@@ -1,6 +1,7 @@
 // apps/mobile/app/(tabs)/chat.tsx
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -11,6 +12,7 @@ import {
 } from 'react-native'
 import { useCallback, useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { sendChatMessage } from '../../services/chatService'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -31,41 +33,58 @@ function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
 }
 
-const MOCK_RESPONSE =
-  "I'm your AI language tutor! This feature is coming soon. 🤖"
+const ERROR_MESSAGE = "Sorry, I couldn't connect to the server. Please try again. 🔌"
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
-function useChatMessages() {
+function useChatMessages(selectedLanguage: string) {
   const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const conversationIdRef = useRef<string | undefined>(undefined)
 
-  const sendMessage = useCallback(async (content: string) => {
-    const trimmed = content.trim()
-    if (!trimmed) return
+  const sendMessage = useCallback(
+    async (content: string) => {
+      const trimmed = content.trim()
+      if (!trimmed) return
 
-    const userMessage: Message = {
-      id: generateId(),
-      role: 'user',
-      content: trimmed,
-      createdAt: new Date(),
-    }
+      const userMessage: Message = {
+        id: generateId(),
+        role: 'user',
+        content: trimmed,
+        createdAt: new Date(),
+      }
 
-    setMessages((prev) => [userMessage, ...prev])
-    setIsLoading(true)
+      setMessages((prev) => [userMessage, ...prev])
+      setIsLoading(true)
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 1000))
-
-    const assistantMessage: Message = {
-      id: generateId(),
-      role: 'assistant',
-      content: MOCK_RESPONSE,
-      createdAt: new Date(),
-    }
-
-    setMessages((prev) => [assistantMessage, ...prev])
-    setIsLoading(false)
-  }, [])
+      try {
+        const response = await sendChatMessage({
+          message: trimmed,
+          language: selectedLanguage,
+          conversationId: conversationIdRef.current,
+        })
+        conversationIdRef.current = response.data.conversationId
+        const assistantMessage: Message = {
+          id: generateId(),
+          role: 'assistant',
+          content: response.data.reply,
+          createdAt: new Date(),
+        }
+        setMessages((prev) => [assistantMessage, ...prev])
+      } catch {
+        const errorMessage: Message = {
+          id: generateId(),
+          role: 'assistant',
+          content: ERROR_MESSAGE,
+          createdAt: new Date(),
+        }
+        setMessages((prev) => [errorMessage, ...prev])
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [selectedLanguage],
+  )
 
   return { messages, isLoading, sendMessage }
 }
@@ -189,7 +208,12 @@ function ChatInput({ isLoading, onSend }: ChatInputProps) {
 
 // ─── ChatHeader ───────────────────────────────────────────────────────────────
 
-function ChatHeader() {
+interface ChatHeaderProps {
+  selectedLanguage: string
+  onLanguagePress: () => void
+}
+
+function ChatHeader({ selectedLanguage, onLanguagePress }: ChatHeaderProps) {
   return (
     <View className="bg-surface border-b border-surface-light px-4 py-3 flex-row items-center justify-between">
       <View className="flex-row items-center gap-3">
@@ -202,11 +226,12 @@ function ChatHeader() {
         </View>
       </View>
       <Pressable
+        onPress={onLanguagePress}
         accessibilityLabel="Select language"
         accessibilityRole="button"
         className="bg-background px-3 py-1.5 rounded-full border border-surface-light"
       >
-        <Text className="text-text-muted text-xs">🌐 Language</Text>
+        <Text className="text-text-muted text-xs">🌐 {selectedLanguage}</Text>
       </Pressable>
     </View>
   )
@@ -215,7 +240,12 @@ function ChatHeader() {
 // ─── ChatScreen ───────────────────────────────────────────────────────────────
 
 export default function ChatScreen() {
-  const { messages, isLoading, sendMessage } = useChatMessages()
+  const [selectedLanguage, setSelectedLanguage] = useState('English')
+  const { messages, isLoading, sendMessage } = useChatMessages(selectedLanguage)
+
+  const handleLanguagePress = useCallback(() => {
+    Alert.alert('Language selection coming soon!')
+  }, [])
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
@@ -224,7 +254,7 @@ export default function ChatScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={0}
       >
-        <ChatHeader />
+        <ChatHeader selectedLanguage={selectedLanguage} onLanguagePress={handleLanguagePress} />
 
         <FlatList
           data={messages}
