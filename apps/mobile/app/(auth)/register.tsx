@@ -1,13 +1,14 @@
 // apps/mobile/app/(auth)/register.tsx
 import { useState } from 'react'
 import { View, Text, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { supabase } from '../../utils/supabase'
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   async function handleRegister() {
     if (!email || !password) {
@@ -20,11 +21,14 @@ export default function RegisterScreen() {
     }
 
     setIsLoading(true)
-    const { error } = await supabase.auth.signUp({ email, password })
+    const { data, error } = await supabase.auth.signUp({ email, password })
     setIsLoading(false)
 
     if (error) {
       Alert.alert('Registration failed', error.message)
+    } else if (data.session) {
+      // Auto-confirmed (e.g., email confirmation disabled in Supabase)
+      router.replace('/(tabs)/home')
     } else {
       Alert.alert('Check your email', 'We sent you a confirmation link!')
     }

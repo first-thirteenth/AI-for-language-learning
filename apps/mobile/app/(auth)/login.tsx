@@ -1,13 +1,14 @@
 // apps/mobile/app/(auth)/login.tsx
 import { useState } from 'react'
 import { View, Text, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { supabase } from '../../utils/supabase'
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   async function handleLogin() {
     if (!email || !password) {
@@ -21,6 +22,8 @@ export default function LoginScreen() {
 
     if (error) {
       Alert.alert('Login failed', error.message)
+    } else {
+      router.replace('/(tabs)/home')
     }
   }
 
