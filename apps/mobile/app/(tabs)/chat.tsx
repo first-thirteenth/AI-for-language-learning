@@ -71,7 +71,9 @@ function useChatMessages(selectedLanguage: string) {
           createdAt: new Date(),
         }
         setMessages((prev) => [assistantMessage, ...prev])
-      } catch {
+      } catch (err) {
+        console.error('Chat error:', err)
+        Alert.alert('Debug', err instanceof Error ? err.message : String(err))
         const errorMessage: Message = {
           id: generateId(),
           role: 'assistant',
@@ -133,7 +135,10 @@ function TypingIndicator() {
 
 function EmptyState() {
   return (
-    <View className="flex-1 items-center justify-center px-8">
+    <View
+      className="flex-1 items-center justify-center px-8"
+      style={{ transform: [{ scaleY: -1 }] }}
+    >
       <Text className="text-5xl mb-4">💬</Text>
       <Text className="text-text text-lg font-semibold text-center mb-2">
         Start a conversation!
