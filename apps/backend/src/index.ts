@@ -1,32 +1,32 @@
 // apps/backend/src/index.ts
-import express from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import { errorHandler } from './middleware/error'
-import routes from './routes'
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import { errorHandler } from "./middleware/error";
+import routes from "./routes";
 
-dotenv.config()
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-const app = express()
-const PORT = process.env.PORT || 3000
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS?.split(",") ?? "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
+app.use(express.json());
 
-app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') ?? '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}))
-app.use(express.json())
+app.use("/api", routes);
 
-app.use('/api', routes)
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
 
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
-})
-
-app.use(errorHandler)
+app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`)
-})
+  console.log(`🚀 Server running on port ${PORT}`);
+});
 
-export default app
+export default app;

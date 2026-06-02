@@ -12,7 +12,8 @@ export function errorHandler(
   _next: NextFunction
 ): void {
   const statusCode = err.statusCode || 500
-  const message = statusCode === 500 ? 'Internal server error' : err.message
+  const isDev = process.env.NODE_ENV === 'development'
+  const message = statusCode === 500 && !isDev ? 'Internal server error' : err.message
 
   console.error(`[Error] ${err.message}`, err.stack)
 
